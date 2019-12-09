@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8/">
+	<title>Homework07</title>
+	<style>
+    *{
+    	margin:0px; 
+    	padding:0px;
+    }
+	.box{
+		width: 1200px;
+		height:382px;
+		border: 1px solid white;
+		margin: 20px auto;
+		overflow: hidden;
+		position: relative;
+	}
+	.slider{
+		width: 8400px;
+		position: absolute;
+		left: -1200px;
+	}
+	.slide{
+		width: 1200px;
+		float: left;
+		overflow: hidden;
+	}
+	.box>span{
+		display: block;
+		width: 30px;
+		height: 50px;
+		text-align: center;
+		cursor: pointer;
+		color: white;
+		position: absolute;
+		line-height:50px;
+		top: 175px;
+		font-size: 30px;
+		background: rgb(255,0,0);
+		opacity:0;
+
+	}
+	#left{
+		left: 30px;
+	}
+	#right{
+		right: 30px;
+	}
+	.navel{
+		position: absolute;
+		left: 500px;
+		bottom: 20px;
+	}
+	.navel>li{
+		background-color:#ccc;
+		width: 20px;
+		height: 20px;
+		border-radius: 50%;
+		float: left;
+		margin: 0 10px;
+		cursor: pointer;
+		list-style: none;
+		text-align: center;
+		font-size: 13px;
+		color: black;
+	}
+	.navel .active{
+		background-color: red;
+		color: white;
+	}
+	.imgx{
+		width: 1200px;
+		height: 382px;
+	}
+
+	.navegator{
+		height: 25px;
+		background-color: #ccc;
+		vertical-align:middle;	
+	}
+	.imgs{
+		position: absolute;
+		left:250px;
+		top:5px;
+	}
+
+	.font{
+		color: red;
+	}
+
+	.p1{
+		position:absolute;
+		top:0px;
+		left:280px;
+		width: 100%;
+		height:25px;
+		overflow: hidden;
+	}
+	.font{
+		font-size: 13px;
+		line-height: 25px;
+		position: absolute;
+		right:-160px;
+		height: 25px;
+		width: 400px;
+	}
+
+ </style>
+</head>
+<body>
+	<div class="navegator">
+		<img class="imgs" src="E://sucai6-master/images/a15.png">
+		<div class="p1"><div class="font" id="font">[温馨提示]最近有不少不法分子在网上骗人，请大家注意！！！</div></div>
+	</div>
+	<div class="box">
+		<div class="slider" id="slider">
+			<div class="slide"><img class="imgx" src="images/b5.png"></div>
+			<div class="slide"><img class="imgx" src="images/b1.png"></div>
+			<div class="slide"><img class="imgx" src="images/b2.png"></div>
+			<div class="slide"><img class="imgx" src="images/b3.png"></div>
+			<div class="slide"><img class="imgx" src="images/b4.png"></div>
+			<div class="slide"><img class="imgx" src="images/b5.png"></div>
+			<div class="slide"><img class="imgx" src="images/b1.png"></div>		
+		</div>
+	<span id="left">< </span>
+	<span id="right">></span>
+	<ul class="navel" id="navel">
+		<li class="active">1</li>
+		<li>2</li>
+		<li>3</li>
+		<li>4</li>
+		<li>5</li>
+	</ul>
+	</div>
+	<script type="text/javascript">
+	function getStyle(obj, attr){
+	if(obj.currentStyle){
+		return obj.currentStyle[attr];
+	} else {
+		return getComputedStyle(obj, null)[attr];
+	}
+	}
+	function animate(obj,json,callback){
+	clearInterval(obj.timer);
+	obj.timer = setInterval(function(){
+		var isStop = true;
+		for(var attr in json){
+			var now = 0;
+			if(attr == 'opacity'){
+				now = parseInt(getStyle(obj,attr)*100);
+			}else{
+				now = parseInt(getStyle(obj,attr));
+			}
+			var speed = (json[attr] - now) / 8;
+			speed = speed>0?Math.ceil(speed):Math.floor(speed);
+			var cur = now + speed;
+			if(attr == 'opacity'){
+				obj.style[attr] = cur / 100;
+			}else{
+				obj.style[attr] = cur + 'px';
+			}
+			if(json[attr] !== cur){
+				isStop = false;
+			}
+		}
+		if(isStop){
+			clearInterval(obj.timer);
+			callback&&callback();
+		}
+	}, 30)
+	}
+		var font=document.getElementsByClassName("font")[0];
+		var box=document.getElementsByClassName("box")[0];
+		var nav=document.getElementById("navel").children;
+		var slider=document.getElementById("slider");
+		var left=document.getElementById("left");
+		var right=document.getElementById("right");
+
+		var i=1;
+		var isMoving=false;
+
+		var time=setInterval(function(){
+			var now=parseInt(getStyle(font,"right"));
+			console.log(now);
+			if(now>1600){
+				now=-140;
+				font.style.right=now+3+"px";
+			}
+			else{
+				font.style.right=now+3+"px";
+			}
+		},30)
+
+		var timer=setInterval(function(){
+			i++;
+			changeNavel();
+			animate(slider,{left:-1200*i},function(){
+			if(i==6){
+				slider.style.left="-1200px";
+				i=1;
+				}});
+			},3000);
+
+		box.onmouseover=function(){
+			animate(left,{opacity:50});
+			animate(right,{opacity:50});
+			clearInterval(timer);
+		}
+
+		box.onmouseout=function(){
+			animate(left,{opacity:0});
+			animate(right,{opacity:0});
+			timer=setInterval(function(){
+			i++;
+			changeNavel();
+			animate(slider,{left:-1200*i},function(){
+			if(i==6){
+				slider.style.left="-1200px";
+				i=1;
+				}});
+			},3000);
+		}
+
+		right.onclick=function(){
+			if(!isMoving){
+				isMoving=true;
+				i++;
+				changeNavel();
+				animate(slider,{left:-1200*i},function(){
+				if(i==6){
+					slider.style.left="-1200px";
+					i=1;
+				}
+				isMoving=false;
+			});
+			}
+		}
+
+		left.onclick=function(){
+			if(!isMoving){
+			isMoving=true;
+			i--;
+			changeNavel();
+			animate(slider,{left:-1200*i},function(){
+			if(i==0){
+				slider.style.left="-6000px";
+				i=5;
+			}
+			isMoving=false;
+		});
+		}
+		}
+
+		for(var j=0;j<5;j++){
+			nav[j].ind=j;
+			nav[j].onclick = function(){
+				i=this.ind+1;
+				changeNavel();
+				animate(slider,{left:-1200*i});
+			}
+		}
+
+		function changeNavel(){
+			for(var j=0;j<5;j++){
+				nav[j].className=" ";
+			}
+			if(i==6){
+				nav[0].className="active";
+			}
+			else if(i==0){
+				nav[4].className="active";
+			}
+			else{
+			nav[i-1].className="active";
+		}
+	}
+
+
+	</script>
+</body>
+</html>
